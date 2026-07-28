@@ -1,0 +1,131 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  BLOCKED
+}
+
+enum NoteStatus {
+  DRAFT
+  PUBLISHED
+  FLAGGED
+  DELETED
+}
+
+enum FlagStatus {
+  PENDING
+  RESOLVED
+  DISMISSED
+}
+
+model User {
+  id           String     @id @default(uuid())
+  username     String     @unique
+  email        String     @unique
+  passwordHash String
+  avatarUrl    String?
+  bio          String?    @db.VarChar(500)
+  role         Role       @default(USER)
+  status       UserStatus @default(ACTIVE)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  notes     Note[]     @relation("UserNotes")
+  likes     Like[]
+  bookmarks Bookmark[]
+  flags     Flag[]     @relation("UserFlags")
+
+  followers Follower[] @relation("UserFollowers")
+  following Follower[] @relation("UserFollowing")
+
+  @@index([status])
+}
+
+model Note {
+  id             String     @id @default(uuid())
+  authorId       String
+  title          String?    @db.VarChar(100)
+  content        String     @db.VarChar(2000)
+  category       String     @db.VarChar(50)
+  status         NoteStatus @default(PUBLISHED)
+  likesCount     Int        @default(0)
+  bookmarksCount Int        @default(0)
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+
+  author    User       @relation("UserNotes", fields: [authorId], references: [id], onDelete: Cascade)
+  likes     Like[]
+  bookmarks Bookmark[]
+  flags     Flag[]
+
+  @@index([authorId, status])
+  @@index([category, status])
+  @@index([createdAt(sort: Desc), status])
+}
+
+model Like {
+  id        String   @id @default(uuid())
+  userId    String
+  noteId    String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  note Note @relation(fields: [noteId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, noteId])
+  @@index([noteId])
+}
+
+model Bookmark {
+  id        String   @id @default(uuid())
+  userId    String
+  noteId    String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  note Note @relation(fields: [noteId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, noteId])
+  @@index([userId])
+}
+
+model Follower {
+  id          String   @id @default(uuid())
+  followerId  String
+  followingId String
+  createdAt   DateTime @default(now())
+
+  follower  User @relation("UserFollowers", fields: [followerId], references: [id], onDelete: Cascade)
+  following User @relation("UserFollowing", fields: [followingId], references: [id], onDelete: Cascade)
+
+  @@unique([followerId, followingId])
+  @@index([followingId])
+}
+
+model Flag {
+  id         String     @id @default(uuid())
+  reporterId String
+  noteId     String
+  reason     String     @db.VarChar(200)
+  status     FlagStatus @default(PENDING)
+  createdAt  DateTime   @default(now())
+
+  reporter User @relation("UserFlags", fields: [reporterId], references: [id], onDelete: Cascade)
+  note     Note @relation(fields: [noteId], references: [id], onDelete: Cascade)
+
+  @@index([status])
+  @@index([noteId])
+}
