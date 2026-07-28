@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 
 export async function POST(request) {
-  const response = NextResponse.redirect(new URL('/login', request.url));
+  const response = NextResponse.json({ success: true });
 
   // Clear the token cookie
   response.cookies.set('token', '', {

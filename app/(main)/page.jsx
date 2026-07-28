@@ -65,7 +65,13 @@ async function getNotes(currentUserId) {
 
 export const metadata = {
   title: 'Home | NotesHub',
-  description: 'Your personal text-based microblogging feed on NotesHub.',
+  description: 'Your personal text-based microblogging feed on NotesHub. Share thoughts, follow creators, and discover content.',
+  keywords: 'microblog, notes, feed, social, content sharing',
+  openGraph: {
+    title: 'NotesHub - Your Personal Feed',
+    description: 'Your personal text-based microblogging feed on NotesHub.',
+    type: 'website',
+  },
 };
 
 async function HomeFeedSection({ currentUser }) {

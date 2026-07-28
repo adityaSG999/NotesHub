@@ -152,7 +152,16 @@ async function getIsFollowing(followerId, followingId) {
 
 export async function generateMetadata({ params }) {
   const { username } = await params;
-  return { title: `@${username} | NotesHub` };
+  return {
+    title: `@${username} | NotesHub`,
+    description: `View ${username}'s profile, notes, and activity on NotesHub. Follow to see their latest content.`,
+    keywords: `profile, ${username}, user, notes, social`,
+    openGraph: {
+      title: `@${username} on NotesHub`,
+      description: `View ${username}'s profile and notes on NotesHub.`,
+      type: 'profile',
+    },
+  };
 }
 
 export default async function ProfilePage({ params, searchParams }) {

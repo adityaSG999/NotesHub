@@ -6,6 +6,12 @@ import NoteCard from '@/components/features/NoteCard';
 import useSession from '@/components/hooks/useSession';
 import Skeleton from '@/components/common/Skeleton';
 
+export const metadata = {
+  title: 'Explore | NotesHub',
+  description: 'Search and discover notes, topics, and people on NotesHub. Explore the community content.',
+  keywords: 'search, explore, discover, notes, topics, people',
+};
+
 const MIN_QUERY_LENGTH = 2;
 const SKELETON_DELAY_MS = 200;
 

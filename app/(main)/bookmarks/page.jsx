@@ -34,7 +34,13 @@ async function getBookmarks(userId) {
 
 export const metadata = {
   title: 'Bookmarks | NotesHub',
-  description: 'Your saved notes on NotesHub.',
+  description: 'Your saved notes on NotesHub. Access your bookmarked content and never lose your favorite posts.',
+  keywords: 'bookmarks, saved notes, favorites, collections',
+  openGraph: {
+    title: 'NotesHub - Your Bookmarks',
+    description: 'Your saved notes on NotesHub.',
+    type: 'website',
+  },
 };
 
 export default async function BookmarksPage() {
