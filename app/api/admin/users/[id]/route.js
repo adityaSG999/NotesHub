@@ -1,7 +1,10 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { verifyToken } from '@/lib/auth';
-import { updateSchema, uuidSchema } from '@/lib/validation';
+import { z } from 'zod';
+
+const userStatusSchema = z.enum(['ACTIVE', 'BLOCKED']);
+const uuidSchema = z.string().uuid();
 
 function requireAdmin(request) {
   const token = request.cookies.get('token')?.value;
@@ -23,12 +26,12 @@ export async function PATCH(request, { params }) {
   }
   const userId = parsedId.data;
   const body = await request.json();
-  const parsed = updateSchema.safeParse(body);
+  const parsed = userStatusSchema.safeParse(body.status);
   if (!parsed.success) return NextResponse.json({ success: false, message: 'Invalid status' }, { status: 400 });
 
   const user = await prisma.user.update({
     where: { id: userId },
-    data: { status: parsed.data.status }
+    data: { status: parsed.data }
   });
 
   return NextResponse.json({ success: true, user: { id: user.id, status: user.status } });
