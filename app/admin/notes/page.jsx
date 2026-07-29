@@ -19,9 +19,22 @@ export default function AdminNotesPage() {
   const fetchNotes = async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/notes?limit=100');
-      const data = await res.json();
-      setNotes(data.notes || []);
+      let allNotes = [];
+      let cursor = null;
+
+      do {
+        const url = cursor
+          ? `/api/notes?limit=100&cursor=${cursor}`
+          : `/api/notes?limit=100`;
+
+        const res = await fetch(url);
+        const data = await res.json();
+
+        allNotes.push(...(data.notes || []));
+        cursor = data.nextCursor;
+      } while (cursor);
+
+      setNotes(allNotes);
     } finally {
       setLoading(false);
     }
@@ -106,9 +119,9 @@ export default function AdminNotesPage() {
                 {paginatedNotes.map((note) => (
                   <div key={note.id} className="p-5 hover:bg-surface-container transition-colors">
                     <div className="flex items-start gap-4">
-                      <Avatar 
-                        src={note.author?.avatarUrl} 
-                        username={note.author?.username} 
+                      <Avatar
+                        src={note.author?.avatarUrl}
+                        username={note.author?.username}
                         size="md"
                         className="shrink-0"
                       />
@@ -119,9 +132,8 @@ export default function AdminNotesPage() {
                               <span className="font-semibold text-text-primary text-sm">@{note.author?.username}</span>
                               <span className="text-xs text-text-muted">•</span>
                               <span className="text-xs text-text-muted">{note.category}</span>
-                              <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                                note.status === 'PUBLISHED' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'
-                              }`}>
+                              <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${note.status === 'PUBLISHED' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'
+                                }`}>
                                 {note.status}
                               </span>
                             </div>
@@ -138,7 +150,7 @@ export default function AdminNotesPage() {
                             <Trash2 className="w-4 h-4" />
                           </button>
                         </div>
-                        
+
                         <div className="flex items-center gap-4 mt-3 text-xs text-text-muted">
                           <div className="flex items-center gap-1">
                             <Heart className="w-3.5 h-3.5" />
@@ -161,7 +173,7 @@ export default function AdminNotesPage() {
                     </div>
                   </div>
                 ))}
-                
+
                 {/* Pagination */}
                 {totalPages > 1 && (
                   <div className="px-6 py-4 border-t border-outline flex items-center justify-between">
@@ -173,36 +185,35 @@ export default function AdminNotesPage() {
                       <ChevronLeft className="w-4 h-4" />
                       Previous
                     </button>
-                    
+
                     <div className="flex items-center gap-2">
                       {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                    let pageNum;
-                    if (totalPages <= 5) {
-                      pageNum = i + 1;
-                    } else if (currentPage <= 3) {
-                      pageNum = i + 1;
-                    } else if (currentPage >= totalPages - 2) {
-                      pageNum = totalPages - 4 + i;
-                    } else {
-                      pageNum = currentPage - 2 + i;
-                    }
-                    
-                    return (
-                      <button
-                        key={pageNum}
-                        onClick={() => setCurrentPage(pageNum)}
-                        className={`w-10 h-10 rounded-lg text-sm font-medium transition-all active:scale-95 ${
-                          currentPage === pageNum
-                            ? 'bg-primary text-white shadow-soft'
-                            : 'hover:bg-surface-container text-text-secondary'
-                        }`}
-                      >
-                        {pageNum}
-                      </button>
-                    );
-                  })}
+                        let pageNum;
+                        if (totalPages <= 5) {
+                          pageNum = i + 1;
+                        } else if (currentPage <= 3) {
+                          pageNum = i + 1;
+                        } else if (currentPage >= totalPages - 2) {
+                          pageNum = totalPages - 4 + i;
+                        } else {
+                          pageNum = currentPage - 2 + i;
+                        }
+
+                        return (
+                          <button
+                            key={pageNum}
+                            onClick={() => setCurrentPage(pageNum)}
+                            className={`w-10 h-10 rounded-lg text-sm font-medium transition-all active:scale-95 ${currentPage === pageNum
+                              ? 'bg-primary text-white shadow-soft'
+                              : 'hover:bg-surface-container text-text-secondary'
+                              }`}
+                          >
+                            {pageNum}
+                          </button>
+                        );
+                      })}
                     </div>
-                    
+
                     <button
                       onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
                       disabled={currentPage === totalPages}
