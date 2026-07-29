@@ -168,7 +168,6 @@ export default async function ProfilePage({ params, searchParams }) {
   const cookieStore = await cookies();
   const token = cookieStore.get('token')?.value;
   const session = token ? verifyToken(token) : null;
-  if (!session) redirect('/login');
 
   const { username } = await params;
   const profileUser = await getUserProfile(username);
@@ -177,12 +176,12 @@ export default async function ProfilePage({ params, searchParams }) {
     notFound();
   }
 
-  const isOwnProfile = session.id === profileUser.id;
+  const isOwnProfile = session?.id === profileUser.id;
   const tab = (await searchParams).tab || 'notes';
   const [notes, isFollowing, likes, followers, following, flags] = await Promise.all([
-    getUserNotes(profileUser.id, session.id),
-    getIsFollowing(session.id, profileUser.id),
-    tab === 'likes' ? getUserLikes(profileUser.id, session.id) : undefined,
+    getUserNotes(profileUser.id, session?.id),
+    getIsFollowing(session?.id, profileUser.id),
+    tab === 'likes' ? getUserLikes(profileUser.id, session?.id) : undefined,
     tab === 'followers' ? getUserFollowers(profileUser.id) : undefined,
     tab === 'following' ? getUserFollowing(profileUser.id) : undefined,
     isOwnProfile && tab === 'flags' ? getUserFlags(profileUser.id) : undefined,

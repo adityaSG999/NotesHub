@@ -32,7 +32,6 @@ export default async function AdminDashboard() {
   const cookieStore = await cookies();
   const token = cookieStore.get('token')?.value;
   const session = token ? verifyToken(token) : null;
-  if (!session || session.role !== 'ADMIN') redirect('/');
 
   const stats = await getStats();
   const recentNotes = await getRecentNotes();

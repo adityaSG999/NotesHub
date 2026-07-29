@@ -11,7 +11,7 @@ export default function Button({
   className = "",
   ...props
 }) {
-  const baseStyles = "inline-flex items-center justify-center font-medium transition-all duration-200 active:scale-95 disabled:opacity-50 disabled:pointer-events-none rounded-button";
+  const baseStyles = "inline-flex items-center justify-center cursor-pointer font-medium transition-all duration-200 active:scale-95 disabled:opacity-50 disabled:pointer-events-none rounded-button";
   
   const variants = {
     primary: "bg-primary text-on-primary hover:bg-primary-hover shadow-soft",
@@ -38,7 +38,7 @@ export default function Button({
       disabled={disabled || loading}
       {...props}
     >
-      {loading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+      {loading && <Loader2 className="w-4 h-4 mr-2 animate-spin" aria-hidden="true" />}
       {children}
     </button>
   );

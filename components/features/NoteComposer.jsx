@@ -14,7 +14,16 @@ export default function NoteComposer({ currentUser, onOptimisticNote, onNoteCrea
 
   const MAX_CHARS = 2000;
   const MAX_TITLE = 100;
-  const categories = ['Thoughts', 'Tech', 'Life', 'Learning', 'Ideas'];
+  const categories = [
+  'Thoughts',
+  'Tech',
+  'Life',
+  'Learning',
+  'Ideas',
+  'Questions',
+  'Updates',
+  'Resources'
+];
 
   const handleSubmit = async (e) => {
     e.preventDefault();

@@ -15,21 +15,25 @@ export default async function MainNav() {
         NotesHub
       </Link>
 
-      <nav className="flex flex-col gap-1">
-        <NavItem href="/" icon={<Home />} label="Home" />
-        <NavItem href="/search" icon={<Search />} label="Explore" />
-        <NavItem href="/bookmarks" icon={<Bookmark />} label="Bookmarks" />
-        <NavItem href="/profile" icon={<User />} label="Profile" />
-        {user?.role === 'ADMIN' && <NavItem href="/admin" icon={<Shield />} label="Admin" />}
-      </nav>
+      {user && (
+        <>
+          <nav className="flex flex-col gap-1">
+            <NavItem href="/" icon={<Home />} label="Home" />
+            <NavItem href="/search" icon={<Search />} label="Explore" />
+            <NavItem href="/bookmarks" icon={<Bookmark />} label="Bookmarks" />
+            <NavItem href="/profile" icon={<User />} label="Profile" />
+            {user?.role === 'ADMIN' && <NavItem href="/admin" icon={<Shield />} label="Admin" />}
+          </nav>
 
-      <Link
-        href="/"
-        className="bg-primary hover:bg-primary-hover text-white rounded-button py-3 px-4 font-semibold shadow-soft active:scale-95 transition-all w-full flex items-center justify-center gap-2 mt-6 text-sm"
-      >
-        <PenSquare className="w-5 h-5" />
-        New Note
-      </Link>
+          <Link
+            href="/"
+            className="bg-primary hover:bg-primary-hover text-white rounded-button py-3 px-4 font-semibold shadow-soft active:scale-95 transition-all w-full flex items-center justify-center gap-2 mt-6 text-sm"
+          >
+            <PenSquare className="w-5 h-5" />
+            New Note
+          </Link>
+        </>
+      )}
 
       {user && <UserNav user={user} />}
     </>

@@ -47,7 +47,19 @@ export default async function BookmarksPage() {
   const cookieStore = await cookies();
   const token = cookieStore.get('token')?.value;
   const session = token ? verifyToken(token) : null;
-  if (!session) redirect('/login');
+
+  if (!session) {
+    return (
+      <div>
+        <div className="sticky top-0 bg-background/80 backdrop-blur-md border-b border-outline z-40 px-4 py-4">
+          <h1 className="text-xl font-bold text-text-primary">Bookmarks</h1>
+        </div>
+        <div className="p-8 text-center text-text-muted">
+          Please sign in to view your bookmarks.
+        </div>
+      </div>
+    );
+  }
 
   const bookmarks = await getBookmarks(session.id);
   const normalizedBookmarks = bookmarks.map(({ note }) => ({

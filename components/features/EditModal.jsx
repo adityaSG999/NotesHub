@@ -7,7 +7,21 @@ import { X, Save } from 'lucide-react';
 export default function EditModal({ note, currentUser, onClose, onUpdate }) {
   const [title, setTitle] = useState(note.title || '');
   const [content, setContent] = useState(note.content || '');
-  const [category, setCategory] = useState(note.category || 'Thoughts');
+  console.log(note);
+  const validCategories = [
+  'Thoughts',
+  'Tech',
+  'Life',
+  'Learning',
+  'Ideas',
+  'Questions',
+  'Updates',
+  'Resources'
+];
+  const normalizedCategory = note.category 
+    ? validCategories.find(cat => cat.toLowerCase() === note.category.toLowerCase()) || 'Thoughts'
+    : 'Thoughts';
+  const [category, setCategory] = useState(normalizedCategory);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -94,11 +108,12 @@ export default function EditModal({ note, currentUser, onClose, onUpdate }) {
               onChange={(e) => setCategory(e.target.value)}
               className="bg-surface-container border border-outline rounded-lg px-3 py-1.5 text-sm text-text-primary outline-none focus:ring-1 focus:ring-primary"
             >
-              <option value="Thoughts">Thoughts</option>
-              <option value="Ideas">Ideas</option>
-              <option value="Questions">Questions</option>
-              <option value="Updates">Updates</option>
-              <option value="Resources">Resources</option>
+    {validCategories.map((cat) => (
+      <option key={cat} value={cat}>
+        {cat}
+      </option>
+    ))}
+
             </select>
           </div>
 

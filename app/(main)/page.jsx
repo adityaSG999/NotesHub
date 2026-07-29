@@ -5,6 +5,7 @@ import { verifyToken } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import HomeFeed from '@/components/features/HomeFeed';
 import FeedSkeleton from '@/components/common/FeedSkeleton';
+import LandingPage from '@/components/features/LandingPage';
 
 function normalizeNoteForCard(note, currentUserId) {
   const hasLiked = note.likes.some((like) => like.userId === currentUserId);
@@ -86,14 +87,19 @@ export default async function HomePage() {
   const token = cookieStore.get('token')?.value;
   const session = token ? verifyToken(token) : null;
 
-  if (!session) redirect('/login');
+  // Show landing page for unauthenticated users
+  if (!session) {
+    return <LandingPage />;
+  }
 
   const currentUser = await prisma.user.findUnique({
     where: { id: session.id },
     select: { id: true, username: true, email: true, avatarUrl: true, role: true }
   });
 
-  if (!currentUser) redirect('/login');
+  if (!currentUser) {
+    return <LandingPage />;
+  }
 
   return (
     <div>

@@ -1,8 +1,24 @@
 import Link from 'next/link';
 import { Home, Search, Bookmark, User, PenSquare, Shield } from 'lucide-react';
 import MainNav from '@/components/layout/MainNav';
+import { cookies } from 'next/headers';
+import { verifyToken } from '@/lib/auth';
 
-export default function MainLayout({ children }) {
+export default async function MainLayout({ children }) {
+  const cookieStore = await cookies();
+  const token = cookieStore.get('token')?.value || null;
+  const user = token ? verifyToken(token) : null;
+
+  // Full-width layout for unauthenticated users (landing page)
+  if (!user) {
+    return (
+      <div className="min-h-screen w-full">
+        {children}
+      </div>
+    );
+  }
+
+  // Standard layout with sidebars for authenticated users
   return (
     <div className="flex min-h-screen max-w-7xl mx-auto w-full relative">
 
@@ -35,18 +51,20 @@ export default function MainLayout({ children }) {
       </aside>
 
       {/* ─── Mobile Bottom Tab Nav ─── */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-surface border-t border-outline flex items-center justify-around py-2 px-2 z-50">
-        <MobileNavItem href="/"          icon={<Home />} />
-        <MobileNavItem href="/search"    icon={<Search />} />
-        <Link
-          href="/"
-          className="bg-primary text-white p-3.5 rounded-full shadow-hover active:scale-95 transition-all -mt-6 border-4 border-background"
-        >
-          <PenSquare className="w-5 h-5" />
-        </Link>
-        <MobileNavItem href="/bookmarks" icon={<Bookmark />} />
-        <MobileNavItem href="/profile"   icon={<User />} />
-      </nav>
+      {user && (
+        <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-surface border-t border-outline flex items-center justify-around py-2 px-2 z-50">
+          <MobileNavItem href="/"          icon={<Home />} />
+          <MobileNavItem href="/search"    icon={<Search />} />
+          <Link
+            href="/"
+            className="bg-primary text-white p-3.5 rounded-full shadow-hover active:scale-95 transition-all -mt-6 border-4 border-background"
+          >
+            <PenSquare className="w-5 h-5" />
+          </Link>
+          <MobileNavItem href="/bookmarks" icon={<Bookmark />} />
+          <MobileNavItem href="/profile"   icon={<User />} />
+        </nav>
+      )}
     </div>
   );
 }

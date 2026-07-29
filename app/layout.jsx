@@ -4,6 +4,7 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
+  metadataBase: new URL('https://noteshub-beryl.vercel.app'),
   title: "NotesHub | Minimal Microblogging",
   description: "Share text-based notes, snippets, and short-form thoughts cleanly.",
   keywords: ["microblogging", "notes", "social media", "text sharing", "minimal", "thoughts", "snippets"],

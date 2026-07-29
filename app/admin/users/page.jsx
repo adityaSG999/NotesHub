@@ -67,63 +67,65 @@ export default function AdminUsersPage() {
       </div>
 
       <div className="bg-surface border border-outline rounded-card shadow-soft overflow-hidden">
-        <table className="w-full text-sm">
-          <thead className="bg-surface-container border-b border-outline">
-            <tr>
-              <th className="text-left px-5 py-3 text-xs font-semibold text-text-muted uppercase tracking-wider">User</th>
-              <th className="text-left px-5 py-3 text-xs font-semibold text-text-muted uppercase tracking-wider">Role</th>
-              <th className="text-left px-5 py-3 text-xs font-semibold text-text-muted uppercase tracking-wider">Notes</th>
-              <th className="text-left px-5 py-3 text-xs font-semibold text-text-muted uppercase tracking-wider">Joined</th>
-              <th className="text-left px-5 py-3 text-xs font-semibold text-text-muted uppercase tracking-wider">Status</th>
-              <th className="px-5 py-3" />
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-outline">
-            {loading && (
-              <tr><td colSpan={6} className="text-center py-10 text-text-muted animate-pulse">Loading users...</td></tr>
-            )}
-            {!loading && filtered.map((user) => (
-              <tr key={user.id} className="hover:bg-surface-dim transition-colors">
-                <td className="px-5 py-3">
-                  <div className="flex items-center gap-3">
-                    <Avatar src={user.avatarUrl} size="sm" username={user.username} />
-                    <div>
-                      <p className="font-medium text-text-primary">@{user.username}</p>
-                      <p className="text-xs text-text-muted">{user.email}</p>
-                    </div>
-                  </div>
-                </td>
-                <td className="px-5 py-3">
-                  <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${user.role === 'ADMIN' ? 'bg-primary/10 text-primary' : 'bg-surface-container text-text-secondary'}`}>
-                    {user.role}
-                  </span>
-                </td>
-                <td className="px-5 py-3 text-text-secondary">{user._count?.notes ?? 0}</td>
-                <td className="px-5 py-3 text-text-muted text-xs">{new Date(user.createdAt).toLocaleDateString()}</td>
-                <td className="px-5 py-3">
-                  <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${user.status === 'ACTIVE' ? 'bg-green-100 text-green-700 dark:bg-green-900/20' : 'bg-error/10 text-error'}`}>
-                    {user.status}
-                  </span>
-                </td>
-                <td className="px-5 py-3 text-right">
-                  {user.role !== 'ADMIN' && (
-                    <button
-                      onClick={() => toggleBlock(user.id, user.status)}
-                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all active:scale-95 ${
-                        user.status === 'ACTIVE'
-                          ? 'text-error hover:bg-error/10'
-                          : 'text-green-600 hover:bg-green-100 dark:hover:bg-green-900/20'
-                      }`}
-                    >
-                      {user.status === 'ACTIVE' ? <ShieldOff className="w-3.5 h-3.5" /> : <ShieldCheck className="w-3.5 h-3.5" />}
-                      {user.status === 'ACTIVE' ? 'Block' : 'Unblock'}
-                    </button>
-                  )}
-                </td>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm min-w-[800px]">
+            <thead className="bg-surface-container border-b border-outline">
+              <tr>
+                <th className="text-left px-5 py-3 text-xs font-semibold text-text-muted uppercase tracking-wider">User</th>
+                <th className="text-left px-5 py-3 text-xs font-semibold text-text-muted uppercase tracking-wider">Role</th>
+                <th className="text-left px-5 py-3 text-xs font-semibold text-text-muted uppercase tracking-wider">Notes</th>
+                <th className="text-left px-5 py-3 text-xs font-semibold text-text-muted uppercase tracking-wider">Joined</th>
+                <th className="text-left px-5 py-3 text-xs font-semibold text-text-muted uppercase tracking-wider">Status</th>
+                <th className="text-left px-5 py-3 text-xs font-semibold text-text-muted uppercase tracking-wider">Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="divide-y divide-outline">
+              {loading && (
+                <tr><td colSpan={6} className="text-center py-10 text-text-muted animate-pulse">Loading users...</td></tr>
+              )}
+              {!loading && filtered.map((user) => (
+                <tr key={user.id} className="hover:bg-surface-dim transition-colors">
+                  <td className="px-5 py-3">
+                    <div className="flex items-center gap-3">
+                      <Avatar src={user.avatarUrl} size="sm" username={user.username} />
+                      <div>
+                        <p className="font-medium text-text-primary">@{user.username}</p>
+                        <p className="text-xs text-text-muted">{user.email}</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="px-5 py-3">
+                    <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${user.role === 'ADMIN' ? 'bg-primary/10 text-primary' : 'bg-surface-container text-text-secondary'}`}>
+                      {user.role}
+                    </span>
+                  </td>
+                  <td className="px-5 py-3 text-text-secondary">{user._count?.notes ?? 0}</td>
+                  <td className="px-5 py-3 text-text-muted text-xs">{new Date(user.createdAt).toLocaleDateString()}</td>
+                  <td className="px-5 py-3">
+                    <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${user.status === 'ACTIVE' ? 'bg-green-100 text-green-700 dark:bg-green-900/20' : 'bg-error/10 text-error'}`}>
+                      {user.status}
+                    </span>
+                  </td>
+                  <td className="px-5 py-3 text-right whitespace-nowrap">
+                    {user.role !== 'ADMIN' && (
+                      <button
+                        onClick={() => toggleBlock(user.id, user.status)}
+                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all active:scale-95 ${
+                          user.status === 'ACTIVE'
+                            ? 'text-error hover:bg-error/10'
+                            : 'text-green-600 hover:bg-green-100 dark:hover:bg-green-900/20'
+                        }`}
+                      >
+                        {user.status === 'ACTIVE' ? <ShieldOff className="w-3.5 h-3.5" /> : <ShieldCheck className="w-3.5 h-3.5" />}
+                        {user.status === 'ACTIVE' ? 'Block' : 'Unblock'}
+                      </button>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
