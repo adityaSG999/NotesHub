@@ -8,16 +8,7 @@ export default function EditModal({ note, currentUser, onClose, onUpdate }) {
   const [title, setTitle] = useState(note.title || '');
   const [content, setContent] = useState(note.content || '');
   console.log(note);
-  const validCategories = [
-  'Thoughts',
-  'Tech',
-  'Life',
-  'Learning',
-  'Ideas',
-  'Questions',
-  'Updates',
-  'Resources'
-];
+  const validCategories = ['Tech', 'Life', 'Thoughts', 'Learning', 'Ideas', 'Design', 'Career', 'Questions', 'Updates', 'Resources'];
   const normalizedCategory = note.category 
     ? validCategories.find(cat => cat.toLowerCase() === note.category.toLowerCase()) || 'Thoughts'
     : 'Thoughts';

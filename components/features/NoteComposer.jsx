@@ -14,16 +14,7 @@ export default function NoteComposer({ currentUser, onOptimisticNote, onNoteCrea
 
   const MAX_CHARS = 2000;
   const MAX_TITLE = 100;
-  const categories = [
-  'Thoughts',
-  'Tech',
-  'Life',
-  'Learning',
-  'Ideas',
-  'Questions',
-  'Updates',
-  'Resources'
-];
+  const categories = ['Tech', 'Life', 'Thoughts', 'Learning', 'Ideas', 'Design', 'Career', 'Questions', 'Updates', 'Resources'];
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -79,7 +70,7 @@ export default function NoteComposer({ currentUser, onOptimisticNote, onNoteCrea
 
       const contentType = res.headers.get('content-type') || '';
       const data = contentType.includes('application/json') ? await res.json() : {};
-      
+
       if (data.success) {
         if (onNoteCreated) onNoteCreated(data.note, tempNote.id);
       } else {
@@ -114,12 +105,12 @@ export default function NoteComposer({ currentUser, onOptimisticNote, onNoteCrea
             onChange={(e) => setContent(e.target.value)}
             maxLength={MAX_CHARS}
           />
-          
+
           {error && <p className="text-error text-xs mb-2">{error}</p>}
-          
+
           <div className="flex items-center justify-between border-t border-outline pt-3 mt-2">
             <div className="flex items-center gap-2">
-              <select 
+              <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
                 className="bg-surface-container text-text-secondary text-sm rounded-full px-3 py-1.5 outline-none border border-outline focus:border-primary appearance-none cursor-pointer"
@@ -127,7 +118,7 @@ export default function NoteComposer({ currentUser, onOptimisticNote, onNoteCrea
                 {categories.map(c => <option key={c} value={c}>{c}</option>)}
               </select>
             </div>
-            
+
             <div className="flex items-center gap-4">
               <span className={`text-xs font-medium ${content.length > MAX_CHARS - 100 ? 'text-error' : 'text-text-muted'}`}>
                 {content.length}/{MAX_CHARS}
