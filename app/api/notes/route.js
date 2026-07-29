@@ -28,7 +28,10 @@ export async function GET(request) {
     const { searchParams } = new URL(request.url);
     const cursor = searchParams.get('cursor');
     const category = searchParams.get('category');
-    const limit = 20;
+    const limit = Math.min(
+      parseInt(searchParams.get("limit") || "20", 10),
+      100
+    );
 
     const where = { status: 'PUBLISHED' };
     if (category) {
