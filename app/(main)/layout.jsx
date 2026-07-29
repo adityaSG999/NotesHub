@@ -1,8 +1,9 @@
 import Link from 'next/link';
-import { Home, Search, Bookmark, User, PenSquare, Shield } from 'lucide-react';
+import { Home, Search, Bookmark, User, PenSquare, Shield, LogOut, MoreHorizontal } from 'lucide-react';
 import MainNav from '@/components/layout/MainNav';
 import { cookies } from 'next/headers';
 import { verifyToken } from '@/lib/auth';
+import MobileMenu from '@/components/features/MobileMenu';
 
 export default async function MainLayout({ children }) {
   const cookieStore = await cookies();
@@ -52,18 +53,21 @@ export default async function MainLayout({ children }) {
 
       {/* ─── Mobile Bottom Tab Nav ─── */}
       {user && (
-        <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-surface border-t border-outline flex items-center justify-around py-2 px-2 z-50">
-          <MobileNavItem href="/"          icon={<Home />} />
-          <MobileNavItem href="/search"    icon={<Search />} />
-          <Link
-            href="/"
-            className="bg-primary text-white p-3.5 rounded-full shadow-hover active:scale-95 transition-all -mt-6 border-4 border-background"
-          >
-            <PenSquare className="w-5 h-5" />
-          </Link>
-          <MobileNavItem href="/bookmarks" icon={<Bookmark />} />
-          <MobileNavItem href="/profile"   icon={<User />} />
-        </nav>
+        <>
+          <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-surface border-t border-outline flex items-center justify-around py-2 px-2 z-50">
+            <MobileNavItem href="/"          icon={<Home />} />
+            <MobileNavItem href="/search"    icon={<Search />} />
+            <Link
+              href="/"
+              className="bg-primary text-white p-3.5 rounded-full shadow-hover active:scale-95 transition-all -mt-6 border-4 border-background"
+            >
+              <PenSquare className="w-5 h-5" />
+            </Link>
+            <MobileNavItem href="/bookmarks" icon={<Bookmark />} />
+            <MobileNavItem href="/profile"   icon={<User />} />
+          </nav>
+          <MobileMenu user={user} />
+        </>
       )}
     </div>
   );
