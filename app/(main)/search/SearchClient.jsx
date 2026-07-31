@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { Search } from 'lucide-react';
 import NoteCard from '@/components/features/NoteCard';
 import useSession from '@/components/hooks/useSession';
@@ -10,6 +11,7 @@ const MIN_QUERY_LENGTH = 2;
 const SKELETON_DELAY_MS = 200;
 
 export default function SearchClient() {
+  const searchParams = useSearchParams();
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -66,6 +68,13 @@ export default function SearchClient() {
       setLoading(false);
     }
   }, []);
+
+  useEffect(() => {
+    const initialQuery = searchParams.get('q') || '';
+    if (initialQuery) {
+      setQuery(initialQuery);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     const timer = window.setTimeout(() => fetchResults(query), 400);

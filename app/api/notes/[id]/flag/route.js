@@ -18,6 +18,16 @@ export async function POST(request, { params }) {
     const payload = verifyToken(token);
     if (!payload) return NextResponse.json({ success: false, message: 'Invalid token' }, { status: 401 });
 
+    // Check if user is admin - admins cannot flag notes
+    const user = await prisma.user.findUnique({
+      where: { id: payload.id },
+      select: { role: true }
+    });
+    if (!user) return NextResponse.json({ success: false, message: 'User not found' }, { status: 404 });
+    if (user.role.toLowerCase() === 'admin') {
+      return NextResponse.json({ success: false, message: 'Admins cannot report notes' }, { status: 403 });
+    }
+
     const body = await request.json();
     const parsed = flagSchema.safeParse(body);
     if (!parsed.success) return NextResponse.json({ success: false, message: 'Reason must be between 5 and 200 characters.' }, { status: 400 });

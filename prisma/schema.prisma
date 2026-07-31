@@ -129,3 +129,18 @@ model Flag {
   @@index([status])
   @@index([noteId])
 }
+
+model TrendingTopic {
+  id           String   @id @default(uuid())
+  category     String   @unique
+  noteCount    Int      @default(0)
+  likesCount   Int      @default(0)
+  bookmarksCount Int    @default(0)
+  trendingScore Int     @default(0)
+  timePeriod   String   @default("7d")
+  calculatedAt DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([trendingScore(sort: Desc)])
+  @@index([calculatedAt])
+}

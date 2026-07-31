@@ -4,11 +4,34 @@ import MainNav from '@/components/layout/MainNav';
 import { cookies } from 'next/headers';
 import { verifyToken } from '@/lib/auth';
 import MobileMenu from '@/components/features/MobileMenu';
+import prisma from '@/lib/prisma';
 
 export default async function MainLayout({ children }) {
   const cookieStore = await cookies();
   const token = cookieStore.get('token')?.value || null;
   const user = token ? verifyToken(token) : null;
+
+  // Fetch trending topics
+  let trendingTopics = [];
+  try {
+    trendingTopics = await prisma.trendingTopic.findMany({
+      orderBy: { trendingScore: 'desc' },
+      take: 10,
+    });
+  } catch (error) {
+    console.error('Error fetching trending topics:', error);
+  }
+
+  // Fallback to default topics if no data
+  if (trendingTopics.length === 0) {
+    trendingTopics = [
+      { category: 'nextjs' },
+      { category: 'webdev' },
+      { category: 'design' },
+      { category: 'buildinpublic' },
+      { category: 'oss' },
+    ];
+  }
 
   // Full-width layout for unauthenticated users (landing page)
   if (!user) {
@@ -38,13 +61,13 @@ export default async function MainLayout({ children }) {
         <div className="bg-surface-container rounded-card p-5 border border-outline">
           <h3 className="font-bold text-text-primary mb-3 text-sm">Trending Topics</h3>
           <div className="flex flex-col gap-2.5">
-            {['#nextjs', '#webdev', '#design', '#buildinpublic', '#oss'].map((tag) => (
+            {trendingTopics.map((topic) => (
               <Link
-                key={tag}
-                href={`/search?q=${tag.slice(1)}`}
+                key={topic.category}
+                href={`/search?q=${topic.category}`}
                 className="text-sm text-primary hover:underline font-medium"
               >
-                {tag}
+                #{topic.category}
               </Link>
             ))}
           </div>

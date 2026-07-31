@@ -41,6 +41,7 @@ export default function NoteCard({ note, currentUserId, currentUser }) {
   const formattedDate = new Date(note.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
   const isOwner = currentUserId === note.author?.id;
   const isPending = localNote.pending === true;
+  const isAdmin = currentUser?.role.toLowerCase() === 'admin';
 
   const handleLikeToggle = async () => {
     if (pendingAction || isPending) return;
@@ -145,9 +146,9 @@ export default function NoteCard({ note, currentUserId, currentUser }) {
             </span>
             <div className="flex items-center gap-2 text-xs text-text-muted mt-0.5">
               <span>{formattedDate}</span>
-              {note.category && (
+              {localNote.category && (
                 <><span>&middot;</span>
-                <span className="bg-surface-container px-2 py-0.5 rounded-full">{note.category}</span></>
+                <span className="bg-surface-container px-2 py-0.5 rounded-full">{localNote.category}</span></>
               )}
             </div>
           </div>
@@ -179,6 +180,13 @@ export default function NoteCard({ note, currentUserId, currentUser }) {
                     <Trash2 className="w-4 h-4" /> Delete Note
                   </button>
                 </>
+              ) : isAdmin ? (
+                <button
+                  disabled
+                  className="flex items-center gap-2 w-full px-4 py-2.5 text-sm text-text-muted opacity-50 cursor-not-allowed"
+                >
+                  <Flag className="w-4 h-4" /> Report Note (Not available)
+                </button>
               ) : (
                 <button
                   onClick={() => { setMenuOpen(false); setReportOpen(true); }}
