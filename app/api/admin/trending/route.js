@@ -124,8 +124,15 @@ export async function POST(request) {
     });
   } catch (error) {
     console.error('Error refreshing trending topics:', error);
+    // Return detailed error in development, generic in production
+    const isDev = process.env.NODE_ENV === 'development';
     return NextResponse.json(
-      { success: false, message: 'Failed to refresh trending topics' },
+      {
+        success: false,
+        message: 'Failed to refresh trending topics',
+        error: isDev ? error.message : undefined,
+        details: isDev ? error.stack : undefined,
+      },
       { status: 500 }
     );
   }
