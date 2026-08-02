@@ -7,7 +7,7 @@ import { Heart, Bookmark, MessageSquare, MoreHorizontal, Flag, Trash2, Edit } fr
 import EditModal from './EditModal';
 import ReplyModal from './ReplyModal';
 
-export default function NoteCard({ note, currentUserId, currentUser }) {
+export default function NoteCard({ note, currentUserId, currentUser, onReplyCreated }) {
   const [isLiked, setIsLiked] = useState(note.hasLiked || false);
   const [likesCount, setLikesCount] = useState(note.likesCount || 0);
   const [isBookmarked, setIsBookmarked] = useState(note.hasBookmarked || false);
@@ -301,6 +301,7 @@ export default function NoteCard({ note, currentUserId, currentUser }) {
           note={localNote}
           currentUser={currentUser}
           onClose={() => setReplyOpen(false)}
+          onReplyCreated={onReplyCreated}
         />
       )}
     </article>

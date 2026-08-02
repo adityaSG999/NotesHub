@@ -108,11 +108,25 @@ export async function POST(request) {
       include: {
         author: {
           select: { id: true, username: true, avatarUrl: true }
+        },
+        likes: {
+          where: { userId: payload.id },
+          select: { userId: true }
+        },
+        bookmarks: {
+          where: { userId: payload.id },
+          select: { userId: true }
+        },
+        flags: {
+          where: { reporterId: payload.id },
+          select: { reporterId: true, status: true }
         }
       }
     });
 
-    return NextResponse.json({ success: true, note: newNote }, { status: 201 });
+    const normalizedNote = normalizeNoteForCard(newNote, payload.id);
+
+    return NextResponse.json({ success: true, note: normalizedNote }, { status: 201 });
   } catch (error) {
     console.error('Create note error:', error);
     return NextResponse.json({ success: false, message: 'Server error' }, { status: 500 });

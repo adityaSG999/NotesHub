@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Avatar from '../common/Avatar';
 import { X, Send } from 'lucide-react';
 
-export default function ReplyModal({ note, currentUser, onClose }) {
+export default function ReplyModal({ note, currentUser, onClose, onReplyCreated }) {
   const [content, setContent] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -41,6 +41,9 @@ export default function ReplyModal({ note, currentUser, onClose }) {
       const data = await res.json();
       if (data.success) {
         setSuccess(true);
+        if (onReplyCreated && data.note) {
+          onReplyCreated(data.note);
+        }
         setTimeout(() => onClose(), 1200);
       } else {
         setError(data.message || 'Failed to post reply.');

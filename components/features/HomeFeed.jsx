@@ -30,6 +30,10 @@ export default function HomeFeed({ initialNotes, initialNextCursor, currentUser 
     setNotes((prev) => prev.filter((note) => note.id !== tempId));
   };
 
+  const handleReplyCreated = (replyNote) => {
+    setNotes((prev) => [replyNote, ...prev]);
+  };
+
   const fetchMoreNotes = useCallback(async () => {
     if (!nextCursor || isLoadingMore) return;
 
@@ -95,7 +99,7 @@ export default function HomeFeed({ initialNotes, initialNextCursor, currentUser 
           <div className="flex flex-col divide-y divide-outline">
             {notes.map((note) => (
               <div key={note.id} className="px-4 py-4">
-                <NoteCard note={note} currentUserId={currentUser.id} currentUser={currentUser} />
+                <NoteCard note={note} currentUserId={currentUser.id} currentUser={currentUser} onReplyCreated={handleReplyCreated} />
               </div>
             ))}
           </div>
