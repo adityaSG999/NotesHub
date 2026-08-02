@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation';
 import { verifyToken } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { Users, FileText, Flag, TrendingUp } from 'lucide-react';
+import TrendingRefreshButton from '@/components/features/TrendingRefreshButton';
 
 async function getStats() {
   const [totalUsers, totalNotes, pendingFlags, publishedToday] = await Promise.all([
@@ -45,9 +46,12 @@ export default async function AdminDashboard() {
 
   return (
     <div>
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-text-primary">Dashboard</h1>
-        <p className="text-text-muted mt-1">Platform overview and quick stats.</p>
+      <div className="mb-8 flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-text-primary">Dashboard</h1>
+          <p className="text-text-muted mt-1">Platform overview and quick stats.</p>
+        </div>
+        <TrendingRefreshButton />
       </div>
 
       {/* Stat Cards */}
