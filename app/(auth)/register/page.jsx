@@ -80,14 +80,16 @@ export default function RegisterPage() {
 
 
             {/* Logo */}
-            <Image
-              src="/android-chrome-512x512.png"
-              alt="NotesHub Logo"
-              width={220}
-              height={220}
-              className="mx-auto rounded-3xl bg-white shadow-2xl"
-              priority
-            />
+            <Link href="/">
+              <Image
+                src="/android-chrome-512x512.png"
+                alt="NotesHub Logo"
+                width={220}
+                height={220}
+                className="mx-auto rounded-3xl bg-white shadow-2xl cursor-pointer hover:scale-105 transition-transform"
+                priority
+              />
+            </Link>
 
 
             {/* Heading */}
@@ -182,14 +184,16 @@ export default function RegisterPage() {
         {/* MOBILE BRAND */}
         <div className="flex flex-col items-center justify-center bg-gradient-to-br from-primary to-primary/70 px-6 py-8 text-center text-white lg:hidden">
 
-          <Image
-            src="/android-chrome-512x512.png"
-            alt="Logo"
-            width={90}
-            height={90}
-            className="rounded-2xl shadow-xl"
-            priority
-          />
+          <Link href="/">
+            <Image
+              src="/android-chrome-512x512.png"
+              alt="Logo"
+              width={90}
+              height={90}
+              className="rounded-2xl shadow-xl cursor-pointer hover:scale-105 transition-transform"
+              priority
+            />
+          </Link>
 
 
           <h1 className="mt-4 text-3xl font-bold">

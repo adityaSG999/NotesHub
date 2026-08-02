@@ -59,14 +59,16 @@ export default function LoginPage() {
 
       <div className="relative z-10 max-w-md text-center text-white">
 
-        <Image
-          src="/android-chrome-512x512.png"
-          alt="Logo"
-          width={220}
-          height={220}
-          className="mx-auto rounded-3xl shadow-2xl"
-          priority
-        />
+        <Link href="/">
+          <Image
+            src="/android-chrome-512x512.png"
+            alt="Logo"
+            width={220}
+            height={220}
+            className="mx-auto rounded-3xl shadow-2xl cursor-pointer hover:scale-105 transition-transform"
+            priority
+          />
+        </Link>
 
         <h1 className="mt-8 text-5xl font-bold">
           Welcome Back
@@ -85,14 +87,16 @@ export default function LoginPage() {
     {/* MOBILE BRAND */}
     <div className="flex flex-col items-center justify-center bg-gradient-to-br from-primary to-primary/70 px-6 py-8 text-center text-white lg:hidden">
 
-      <Image
-        src="/android-chrome-512x512.png"
-        alt="Logo"
-        width={90}
-        height={90}
-        className="rounded-2xl shadow-xl"
-        priority
-      />
+      <Link href="/">
+        <Image
+          src="/android-chrome-512x512.png"
+          alt="Logo"
+          width={90}
+          height={90}
+          className="rounded-2xl shadow-xl cursor-pointer hover:scale-105 transition-transform"
+          priority
+        />
+      </Link>
 
       <h1 className="mt-4 text-3xl font-bold">
         Welcome Back
