@@ -1,48 +1,62 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 import { verifyToken } from './lib/auth';
 
 const publicRoutes = ['/login', '/register', '/search'];
 const adminRoutes = ['/admin'];
 
-export function proxy(request) {
+type Session = {
+  role?: string;
+  [key: string]: unknown;
+};
+
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const token = request.cookies.get('token')?.value;
-  let session = null;
-  
+
+  let session: Session | null = null;
+
   try {
-    session = token ? verifyToken(token) : null;
+    session = token ? (verifyToken(token) as Session) : null;
   } catch (err) {
     // If token verification fails, treat as no session
     session = null;
   }
 
-  // Check if route is public (login/register)
-  const isPublicRoute = publicRoutes.some(route => pathname.startsWith(route));
+  // Check if route is public
+  const isPublicRoute = publicRoutes.some((route) =>
+    pathname.startsWith(route)
+  );
 
-  // Redirect authenticated users away from auth pages (login/register) but allow other public routes
-  if (session && (pathname.startsWith('/login') || pathname.startsWith('/register'))) {
+  // Redirect authenticated users away from login/register pages
+  if (
+    session &&
+    (pathname.startsWith('/login') || pathname.startsWith('/register'))
+  ) {
     return NextResponse.redirect(new URL('/', request.url));
   }
 
   // Check if route is admin route
-  const isAdminRoute = adminRoutes.some(route => pathname.startsWith(route));
+  const isAdminRoute = adminRoutes.some((route) =>
+    pathname.startsWith(route)
+  );
 
   // Admin route protection
   if (isAdminRoute) {
     if (!session) {
       return NextResponse.redirect(new URL('/login', request.url));
     }
-    
-    // Check if user is admin (need to fetch user role from DB or include in token)
-    // For now, we'll check the role in the session if it exists
-    if (typeof session === 'object' && session.role !== 'ADMIN') {
+
+    // Check admin role
+    if (session.role !== 'ADMIN') {
       return NextResponse.redirect(new URL('/', request.url));
     }
   }
 
-  // Protect private routes (profile, bookmarks, etc.)
-  const isPrivateRoute = pathname.startsWith('/profile') || pathname.startsWith('/bookmarks');
-  
+  // Protect private routes
+  const isPrivateRoute =
+    pathname.startsWith('/profile') ||
+    pathname.startsWith('/bookmarks');
+
   if (isPrivateRoute && !session) {
     return NextResponse.redirect(new URL('/login', request.url));
   }
@@ -54,10 +68,10 @@ export const config = {
   matcher: [
     /*
      * Match all request paths except:
-     * - api routes (handled separately)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
+     * - api routes
+     * - _next/static
+     * - _next/image
+     * - favicon.ico
      * - public files
      */
     '/((?!api|_next/static|_next/image|favicon.ico|.*\\..*$).*)',
